@@ -267,8 +267,9 @@ class HomeController extends Controller
 
     public function laporan_new()
     {
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
-        return view('laporan_new');
+        return view('laporan_new', compact('keranjang'));
     }
 
     public function destroy($id=null){
