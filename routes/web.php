@@ -20,7 +20,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/add-to-cart', [HomeController::class, 'addToCart'])->name('cart.store');
     Route::match(['get', 'post'], '/tambah-produk', [HomeController::class, 'tambah_produk'])->name('tambah.produk');
     Route::get('hapus-produk', [HomeController::class, 'hapus_produk']);
-    Route::get('laporan', [HomeController::class, 'laporan_new']);
+    Route::get('laporan', [HomeController::class, 'laporan_new'])->name('laporan.index');
     Route::get('transaksi', [HomeController::class, 'transaksi']);
     Route::get('invoice/{id}', [HomeController::class, 'invoice']);
     Route::match(['get', 'post'], 'order', [HomeController::class, 'order']);

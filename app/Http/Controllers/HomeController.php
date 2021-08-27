@@ -265,8 +265,23 @@ class HomeController extends Controller
         return view('laporan',compact('keranjang','nama','tjp'));
     }
 
-    public function laporan_new()
+    public function laporan_new(request $request)
     {
+        if(request()->ajax())
+        {
+            if(!empty($request->from_date))
+            {
+                $data = DB::table('order')
+                ->whereBetween('created_at', array($request->from_date, $request->to_date))
+                ->get();
+            }
+            else
+            {
+                $data = DB::table('order')
+                ->get();
+            }
+            return datatables()->of($data)->make(true);
+        }
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
         return view('laporan_new', compact('keranjang'));
