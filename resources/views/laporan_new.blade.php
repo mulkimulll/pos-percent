@@ -27,7 +27,28 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card card-danger card-outline">
+                    <div class="card-header">
+                        <h4>Produk Terjual</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="donutChart"
+                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+            {{-- <div class="col-md-6">
+                <div class="card card-danger card-outline">
+                    <div class="card-header">
+                        <h4></h4>
+                    </div>
+                    <div class="card-body">
+
+                    </div>
+                </div>
+            </div> --}}
+            <div class="col-md-12">
+                <div class="card card-primary card-outline">
                     <div class="card-body">
                         <div class="row input-daterange">
                             <div class="col-md-4">
@@ -76,6 +97,8 @@
 <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+<!-- ChartJS -->
+<script src="{{asset('plugins/chart.js/Chart.min.js')}}"></script>
 <script>
     $(document).ready(function () {
         $('.input-daterange').datepicker({
@@ -98,8 +121,7 @@
                     }
                 },
 
-                buttons: [
-                    {
+                buttons: [{
                         extend: 'csv'
                     },
                     {
@@ -158,5 +180,37 @@
 
     });
 
+</script>
+<script>
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    var donutData = {
+        labels: [
+          @php
+          foreach($nama as $product) {
+              echo "['".$product->nama."'],";
+          }
+          @endphp
+        ],
+        datasets: [{
+            data: [
+              @php
+          foreach($tjp as $h) {
+          echo "'".$h->total_produk."',";
+          }
+          @endphp],
+            backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+        }]
+    }
+    var donutOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+        type: 'doughnut',
+        data: donutData,
+        options: donutOptions
+    })
 </script>
 @endsection

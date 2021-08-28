@@ -163,8 +163,7 @@ class HomeController extends Controller
             
             $kembalian = $data['jumlah_bayar'] - $data['total'];
         }
-         $d=DB::delete("DELETE from cart");
-        // cart::where(['id'=>$id])->update(['nama_wisata'=>$data['nama_wisata']]);
+        $d=DB::delete("DELETE from cart");
         
         return redirect()->back()->with('bayar','Kembalian: Rp. '.number_format($kembalian,0));
     }
@@ -240,31 +239,6 @@ class HomeController extends Controller
         return view('transaksi',compact('keranjang','transaksi'));
     }
 
-    public function laporan()
-    {
-        
-        
-        // daftar nama produk
-        $nama = DB::select("SELECT 
-            nama
-        FROM
-            kopi.order a
-                LEFT JOIN
-            produk b ON a.id_produk = b.id
-        GROUP BY nama");
-
-        // total jual produk
-        $tjp = DB::select("SELECT 
-            b.nama, count(b.nama) as total_produk
-        FROM
-            kopi.order a
-                LEFT JOIN
-            produk b ON a.id_produk = b.id
-            GROUP BY b.nama");
-
-        return view('laporan',compact('keranjang','nama','tjp'));
-    }
-
     public function laporan_new(request $request)
     {
         if(request()->ajax())
@@ -284,9 +258,28 @@ class HomeController extends Controller
             }
             return datatables()->of($data)->make(true);
         }
+
+        // daftar nama produk
+        $nama = DB::select("SELECT 
+            nama
+        FROM
+            kopi.order a
+                LEFT JOIN
+            produk b ON a.id_produk = b.id
+        GROUP BY nama");
+
+        // total jual produk
+        $tjp = DB::select("SELECT 
+            b.nama, count(b.nama) as total_produk
+        FROM
+            kopi.order a
+                LEFT JOIN
+            produk b ON a.id_produk = b.id
+            GROUP BY b.nama");
+
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
-        return view('laporan_new', compact('keranjang'));
+        return view('laporan_new', compact('keranjang', 'nama', 'tjp'));
     }
 
     public function destroy($id=null){
