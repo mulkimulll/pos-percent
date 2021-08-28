@@ -87,7 +87,7 @@
         function load_data(from_date = '', to_date = '') {
             $('#order_table').DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                "buttons": ["copy", "csv", "excel", "pdf", "print"],
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -110,7 +110,7 @@
                         name: 'created_at'
                     }
                 ]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            });
         }
 
         $('#filter').click(function () {
