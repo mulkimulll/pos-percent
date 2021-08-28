@@ -12,12 +12,12 @@
     <div class="container">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0"> Top Navigation <small>Example 3.0</small></h1>
+                <h1 class="m-0"> Laporan Penjualan</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="#">Home</a></li>
-                    <li class="breadcrumb-item active">Top Navigation</li>
+                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
+                    <li class="breadcrumb-item active">Laporan Penjualan</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,9 +28,6 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Laporan Penjualan</h3>
-                    </div>
                     <div class="card-body">
                         <div class="row input-daterange">
                             <div class="col-md-4">
@@ -72,8 +69,12 @@
 <script src="{{asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
-<script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+<script src="{{asset('plugins/jszip/jszip.min.js')}}"></script>
+<script src="{{asset('plugins/pdfmake/pdfmake.min.js')}}"></script>
+<script src="{{asset('plugins/pdfmake/vfs_fonts.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
+<script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+<script src="{{asset('plugins/datatables-buttons/js/buttons.colVis.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 <script>
     $(document).ready(function () {
@@ -87,14 +88,33 @@
 
         function load_data(from_date = '', to_date = '') {
             $('#order_table').DataTable({
-                buttons: [
-                    'copy', 
-                    'csv', 
-                    'excel', 
-                    'print'
-                ],
                 processing: true,
                 serverSide: true,
+                dom: '<"html5buttons">Bfrtip',
+                language: {
+                    buttons: {
+                        // colvis: 'Tampilkan semua', // label button show / hide
+                        colvisRestore: "Reset Kolom" //lael untuk reset kolom ke default
+                    }
+                },
+
+                buttons: [
+                    {
+                        extend: 'csv'
+                    },
+                    {
+                        extend: 'pdf',
+                        title: 'Laporan Penjualan Percent Coffee'
+                    },
+                    {
+                        extend: 'excel',
+                        title: 'Laporan Penjualan Percent Coffee'
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Laporan Penjualan Percent Coffee'
+                    },
+                ],
                 ajax: {
                     url: '{{ route("laporan.index") }}',
                     data: {
@@ -115,7 +135,7 @@
                         name: 'created_at'
                     }
                 ]
-            }).buttons().container().appendTo('#order_table_wrapper .col-md-6:eq(0)');
+            });
         }
 
         $('#filter').click(function () {
