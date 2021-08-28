@@ -73,6 +73,7 @@
 <script src="{{asset('plugins/datatables-buttons/js/dataTables.buttons.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js')}}"></script>
 <script src="{{asset('plugins/datatables-buttons/js/buttons.print.min.js')}}"></script>
+<script src="{{asset('plugins/datatables-buttons/js/buttons.html5.min.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 <script>
     $(document).ready(function () {
@@ -86,8 +87,12 @@
 
         function load_data(from_date = '', to_date = '') {
             $('#order_table').DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print"],
+                buttons: [
+                    'copy', 
+                    'csv', 
+                    'excel', 
+                    'print'
+                ],
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -110,7 +115,7 @@
                         name: 'created_at'
                     }
                 ]
-            });
+            }).buttons().container().appendTo('#order_table_wrapper .col-md-6:eq(0)');
         }
 
         $('#filter').click(function () {
