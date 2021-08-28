@@ -149,10 +149,10 @@ class HomeController extends Controller
     {
         if ($request->isMethod('post')) {
             $data = $request->all();
-            
-            foreach ($request->id_produk as $key) {
+
+            foreach ($request->id_produk as $key => $value) {
                 $o = new order;
-                $o->id_produk = $key;
+                $o->id_produk = $value;
                 $o->nama_customer = $data['customer'];
                 $o->diskon = $data['diskon'];
                 $o->jumlah_produk = $data['jumlah_produk'];
@@ -273,11 +273,13 @@ class HomeController extends Controller
             {
                 $data = DB::table('order')
                 ->whereBetween('created_at', array($request->from_date, $request->to_date))
+                ->groupBy('nama_customer')
                 ->get();
             }
             else
             {
                 $data = DB::table('order')
+                ->groupBy('nama_customer')
                 ->get();
             }
             return datatables()->of($data)->make(true);
