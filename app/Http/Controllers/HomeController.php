@@ -180,7 +180,7 @@ class HomeController extends Controller
     public function hapus_cart($id=null)
     {
         $d=DB::delete("DELETE from cart where id_produk=?",[$id]);
-        $o=DB::delete("DELETE from kopi.order where id_produk=?",[$id]);
+        $o=DB::delete("DELETE from pos_percent.order where id_produk=?",[$id]);
         return redirect('/cart')->with('messagehapus','data berhasil di hapus!!!');
     }
 
@@ -188,7 +188,7 @@ class HomeController extends Controller
     {
         $keranjang = DB::select("SELECT COUNT(*) as keranjang FROM cart WHERE stts=0")[0];
 
-        $inv = DB::select("SELECT * FROM kopi.order WHERE nama_customer=?",[$customer]);
+        $inv = DB::select("SELECT * FROM pos_percent.order WHERE nama_customer=?",[$customer]);
         if ($inv) {
             $inv=$inv[0];
         }
@@ -231,9 +231,9 @@ class HomeController extends Controller
                 total,
                 a.created_at
             FROM
-                kopi.order a
+                pos_percent.order a
                     LEFT JOIN
-                kopi.produk b ON a.id_produk = b.id
+                pos_percent.produk b ON a.id_produk = b.id
             ORDER BY created_at DESC");
 
         return view('transaksi',compact('keranjang','transaksi'));
@@ -263,7 +263,7 @@ class HomeController extends Controller
         $nama = DB::select("SELECT 
             nama
         FROM
-            kopi.order a
+            pos_percent.order a
                 LEFT JOIN
             produk b ON a.id_produk = b.id
         GROUP BY nama");
@@ -272,7 +272,7 @@ class HomeController extends Controller
         $tjp = DB::select("SELECT 
             b.nama, count(b.nama) as total_produk
         FROM
-            kopi.order a
+            pos_percent.order a
                 LEFT JOIN
             produk b ON a.id_produk = b.id
             GROUP BY b.nama");
