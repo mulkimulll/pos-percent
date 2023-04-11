@@ -130,7 +130,11 @@ class HomeController extends Controller
     {
 
         if($request->isMethod('post')){
+            // return $request;
             $r = DB::select("SELECT count(id_produk) as id_produk FROM cart where id_produk=? and stts=0",[$request->id_produk])[0];
+            $produk = Produk::find($request->id_produk);
+            $produk = $produk->nama;
+
             if ($r->id_produk == 0) {
                 $data = $request->all();
                 $cart = new cart;
@@ -138,9 +142,9 @@ class HomeController extends Controller
                 $cart->stts = '0';
                 $cart->save();
     
-                return redirect()->back()->with('message','Produk berhasil dimasukkan ke keranjang');
+                return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
             }else {
-                return redirect()->back()->with('messageupdated','Produk sudah di masukkan di keranjang');
+                return redirect()->back();
             }  
         }
     }
