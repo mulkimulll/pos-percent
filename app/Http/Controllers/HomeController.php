@@ -153,19 +153,22 @@ class HomeController extends Controller
     {
         if ($request->isMethod('post')) {
             $data = $request->all();
-
-            foreach ($request->id_produk as $key => $value) {
-                $o = new order;
-                $o->id_produk = $value;
-                $o->nama_customer = $data['customer'];
-                $o->diskon = $data['diskon'];
-                $o->jumlah_produk = $data['jumlah_produk'];
-                $o->jumlah_bayar = $data['jumlah_bayar'];
-                $o->total = $data['total'];
-                $o->save();
+            if ($request->jumlah_bayar < $request->total) {
+                return redirect()->back()->with(['error' => 'Nominal kurang dari tagihan']);
+            } else {
+                foreach ($request->id_produk as $key => $value) {
+                    $o = new order;
+                    $o->id_produk = $value;
+                    $o->nama_customer = $data['customer'];
+                    $o->jumlah_produk = $data['jumlah_produk'];
+                    $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->total = $data['total'];
+                    $o->save();
+                }
+                
+                $kembalian = $data['jumlah_bayar'] - $data['total'];
             }
             
-            $kembalian = $data['jumlah_bayar'] - $data['total'];
         }
         $d=DB::delete("DELETE from cart");
         

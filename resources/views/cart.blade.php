@@ -20,6 +20,11 @@
                 <div class="container-fluid">
                     <div class="row">
                         <aside class="col-lg-9">
+                            @if ($message = Session::get('error'))
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="far fa-bell"></i> {{ $message }}
+                                </div>
+                            @endif
                             <div class="card">
                                 <div class="table-responsive">
                                     <table class="table table-borderless table-shopping-cart">
