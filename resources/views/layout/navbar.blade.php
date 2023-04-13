@@ -1,10 +1,18 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
-        <a href="{{ url('/') }}" class="navbar-brand">
-            <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo" class="brand-image img-circle elevation-3"
-                style="opacity: .8">
-            <span class="brand-text font-weight-light">PakKasir</span>
-        </a>
+        @if (Auth::user())
+            <a href="{{ url('/') }}" class="navbar-brand">
+                <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo"
+                    class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">PakKasir</span>
+            </a>
+        @else
+            <a href="{{ url('/menu') }}" class="navbar-brand">
+                <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo"
+                    class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">PakKasir</span>
+            </a>
+        @endif
 
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
             aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,9 +22,6 @@
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
 
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="{{ url('/') }}" class="nav-link">Home</a>
-                </li>
                 @if (Auth::user())
                     <li class="nav-item">
                         <a href="{{ url('/') }}" class="nav-link">Home</a>
@@ -37,6 +42,10 @@
                     </li>
                     <li class="nav-item">
                         <a href="{{ url('laporan') }}" class="nav-link">Lihat laporan</a>
+                    </li>
+                @else
+                    <li class="nav-item">
+                        <a href="{{ url('/menu') }}" class="nav-link">Home</a>
                     </li>
                 @endif
             </ul>
