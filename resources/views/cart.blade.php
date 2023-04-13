@@ -47,7 +47,6 @@
                                                             <figcaption class="info"> <a href="#"
                                                                     class="title text-dark"
                                                                     data-abc="true">{{ $cart->nama }}</a>
-                                                                <p class="text-muted small">Keterangan: </p>
                                                             </figcaption>
                                                         </figure>
                                                     </td>

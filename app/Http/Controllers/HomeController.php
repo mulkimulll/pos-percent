@@ -9,6 +9,7 @@ use App\Models\produk;
 use App\Models\cart;
 use App\Models\order;
 use DB;
+use Carbon\Carbon;
 
 use Session;
 
@@ -159,6 +160,7 @@ class HomeController extends Controller
                 foreach ($request->id_produk as $key => $value) {
                     $o = new order;
                     $o->id_produk = $value;
+                    $o->no_pesanan = "INV-".Carbon::now()->format('Y-m-d');
                     $o->nama_customer = $data['customer'];
                     $o->jumlah_produk = $data['jumlah_produk'];
                     $o->jumlah_bayar = $data['jumlah_bayar'];
