@@ -29,3 +29,5 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('logout');
  
 });
+
+Route::get('menu', [HomeController::class, 'index'])->name('home');

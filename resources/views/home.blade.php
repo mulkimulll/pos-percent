@@ -66,7 +66,7 @@
                                         <p class="mb-3">{{ $item->deskripsi }} </p>
                                     </div>
                                     <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
-                                        <h3 class="mb-0 font-weight-semibold">Rp. {{ $item->harga }}</h3>
+                                        <h3 class="mb-0 font-weight-semibold">@currency($item->harga)</h3>
                                         <form action="{{ url('/add-to-cart') }}" method="POST">
                                             @csrf
                                             <input type="hidden" name="id_produk" value="{{ $item->id }}">
