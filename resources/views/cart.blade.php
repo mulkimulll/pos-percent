@@ -147,11 +147,12 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <button type="button" id="close" class="close" data-dismiss="modal"
+                                        aria-label="Close">
                                         <span aria-hidden="true">×</span></button>
                                 </div>
                                 <div class="modal-body">
-                                    <h1><b><i class="kembalian"></i></b></h1>
+                                    <h1 class="kembalian"></h1>
                                 </div>
                                 <div class="modal-footer">
                                 </div>
