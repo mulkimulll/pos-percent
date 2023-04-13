@@ -67,13 +67,23 @@
                                     </div>
                                     <div class="mt-3 mt-lg-0 ml-lg-3 text-center">
                                         <h3 class="mb-0 font-weight-semibold">@currency($item->harga)</h3>
-                                        <form action="{{ url('/add-to-cart') }}" method="POST">
-                                            @csrf
-                                            <input type="hidden" name="id_produk" value="{{ $item->id }}">
-                                            <input type="hidden" name="harga" value="{{ $item->harga }}">
-                                            <button class="btn btn-sm btn-primary mt-4 text-white"><i
-                                                    class="fas fa-cart-plus"></i> beli</button>
-                                        </form>
+                                        @if (Auth::user())
+                                            <form action="{{ url('/add-to-cart') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="id_produk" value="{{ $item->id }}">
+                                                <input type="hidden" name="harga" value="{{ $item->harga }}">
+                                                <button class="btn btn-sm btn-primary mt-4 text-white"><i
+                                                        class="fas fa-cart-plus"></i> beli</button>
+                                            </form>
+                                        @else
+                                            <form action="{{ url('/add-to-cart-cust') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="id_produk" value="{{ $item->id }}">
+                                                <input type="hidden" name="harga" value="{{ $item->harga }}">
+                                                <button class="btn btn-sm btn-primary mt-4 text-white"><i
+                                                        class="fas fa-cart-plus"></i> beli</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>

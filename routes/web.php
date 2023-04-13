@@ -31,3 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('menu', [HomeController::class, 'index'])->name('home');
+Route::match(['get', 'post'], 'cart', [HomeController::class, 'cart'])->name('cart');
+Route::get('/cart-quantity/{id}/{quantity}', [HomeController::class, 'cart_quantity'])->name('cart.quantity');
+Route::get('hapus-cart/{id}', [HomeController::class, 'hapus_cart']);
+Route::post('/add-to-cart-cust', [HomeController::class, 'addToCart'])->name('cart.store');

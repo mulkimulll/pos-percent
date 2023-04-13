@@ -17,23 +17,28 @@
                 <li class="nav-item">
                     <a href="{{ url('/') }}" class="nav-link">Home</a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false" class="nav-link dropdown-toggle">Kelola</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li>
-                            <a tabindex="-1" href="{{ route('tambah.produk') }}" class="dropdown-item">Tambah
-                                produk</a>
-                        </li>
-                        <li>
-                            <a tabindex="-1" href="{{ route('daftar.produk') }}" class="dropdown-item">Daftar
-                                produk</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url('laporan') }}" class="nav-link">Lihat laporan</a>
-                </li>
+                @if (Auth::user())
+                    <li class="nav-item">
+                        <a href="{{ url('/') }}" class="nav-link">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false" class="nav-link dropdown-toggle">Kelola</a>
+                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                            <li>
+                                <a tabindex="-1" href="{{ route('tambah.produk') }}" class="dropdown-item">Tambah
+                                    produk</a>
+                            </li>
+                            <li>
+                                <a tabindex="-1" href="{{ route('daftar.produk') }}" class="dropdown-item">Daftar
+                                    produk</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ url('laporan') }}" class="nav-link">Lihat laporan</a>
+                    </li>
+                @endif
             </ul>
         </div>
 
@@ -47,9 +52,12 @@
                     @endif
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('logout') }}" class="nav-link">Logout</a>
-            </li>
+            @if (Auth::user())
+                <li class="nav-item">
+                    <a href="{{ route('logout') }}" class="nav-link">Logout</a>
+                </li>
+            @else
+            @endif
         </ul>
     </div>
 </nav>

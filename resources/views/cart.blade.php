@@ -111,12 +111,14 @@
                                             <dt>Total:</dt>
                                             <dd class="text-right ml-3">@currency($total_amount)</dd>
                                         </dl>
-                                        <div class="form-group"> <label>Jumlah bayar</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control coupon" name="jumlah_bayar"
-                                                    placeholder="Rp.">
+                                        @if (Auth::user())
+                                            <div class="form-group"> <label>Jumlah bayar</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control coupon" name="jumlah_bayar"
+                                                        placeholder="Rp.">
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                         <hr>
                                         @foreach ($carts as $item)
                                             <input type="text" class="form-control coupon" name="id_produk[]"
