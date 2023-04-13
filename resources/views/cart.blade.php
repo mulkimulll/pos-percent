@@ -102,7 +102,7 @@
                                         @csrf
                                         <div class="form-group"> <label>Nama customer</label>
                                             <div class="input-group">
-                                                <input type="text" class="form-control coupon" name="customer"
+                                                <input type="text" class="form-control" name="customer"
                                                     placeholder="junaidi" required>
                                             </div>
                                         </div>
@@ -207,73 +207,6 @@
                     },
                 ]
             });
-
-            // Ketika nama barang di klik
-            $('body').on('click', '.btn-barang', function(e) {
-                e.preventDefault();
-                $(this).closest('tr').find('.loading').show();
-                var id = $(this).attr('barang-id');
-                var url = "{{ url('get') }}" + '/' + id;
-                var _this = $(this);
-
-                $.ajax({
-                    type: 'get',
-                    url: url,
-                    success: function(data) {
-                        console.log(data);
-
-                        $("input[name='nama']").val(data.nama);
-                        $("input[name='harga_awal']").val(data.harga_awal);
-                        $("input[name='discount']").val(data.discount);
-                        $("input[name='harga_akhir']").val(data.harga_akhir);
-                        $("input[name='barang_id']").val(data.barang_id);
-
-                        _this.closest('tr').find('.loading').hide();
-                    }
-                })
-            });
-
-            // Ketika submit di klik
-            $('.btn-submit').click(function(e) {
-                e.preventDefault();
-                var nama = $("input[name='nama']").val();
-                if (nama == '') {
-                    // swal('Warning','Barang wajib dipilih terlebih dahulu','warning');
-                    alert('Barang wajib dipilih terlebih dahulu');
-                } else {
-                    $(this).addClass('disabled');
-                    $(this).closest('form').submit();
-                }
-            })
-
-            // Ketika btn selesai di klik
-            $('.btn-selesai').click(function(e) {
-                e.preventDefault();
-                var total = "{{ $total }}";
-                var bayar = $("input[name='bayar']").val();
-
-                if (bayar < total) {
-                    alert('Uang Kurang');
-                } else {
-                    $(this).closest('form').submit();
-                }
-
-            })
-
-            $(document).keypress(function(e) {
-                if (e.which == 13) {
-                    $('div.dataTables_filter input').focus();
-                    // $("Input[name='bayar']").focus();
-                }
-            })
-
-            $(document).keypress(function(e) {
-                if (e.which == 118) {
-                    // $('div.dataTables_filter input').focus();
-                    $("Input[name='bayar']").focus();
-                }
-            })
-
         })
     </script>
 @endsection
