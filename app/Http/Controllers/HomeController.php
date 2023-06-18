@@ -7,10 +7,12 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use App\Models\produk;
 use App\Models\cart;
+use App\Models\meja;
 use App\Models\order;
+use App\Models\order_detail;
 use DB;
 use Carbon\Carbon;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Session;
 
 class HomeController extends Controller
@@ -73,6 +75,39 @@ class HomeController extends Controller
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
         return view('daftar-produk',compact('produk','keranjang'));
+    }
+
+    public function ubah_produk(request $request, $id)
+    {
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+        $produk = Produk::find($id);
+        if ($request->isMethod('POST')) {
+            if($request->hasfile('gambar')){
+                $files = $request->file('gambar');
+                $extension = $files->getClientOriginalName();
+                $large_image_path = 'images/produk/'.$extension;
+                $files->move('images/produk/', $large_image_path);  
+                $gambar = $large_image_path;
+               } else {
+                $gambar = $produk->gambar;
+               }
+            $produk->update([
+                'nama' => $request->nama,
+                'harga' => $request->harga,
+                'deskripsi' => $request->deskripsi,
+                'gambar' => $gambar
+            ]);
+        }
+
+        return view('ubah-produk', compact('produk','keranjang'));
+    }
+
+    public function hapus_produk($id)
+    {
+        $produk = Produk::find($id);
+        $produk->delete();
+
+        return redirect()->back();
     }
 
     public function cart(Request $request, $id=null)
@@ -153,21 +188,25 @@ class HomeController extends Controller
     public function order(Request $request, $id=null)
     {
         if ($request->isMethod('post')) {
+            // return $request;
             $data = $request->all();
             if ($request->jumlah_bayar < $request->total) {
-                return redirect()->back()->with(['error' => 'Nominal kurang dari tagihan']);
+                return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
             } else {
-                foreach ($request->id_produk as $key => $value) {
-                    $o = new order;
-                    $o->id_produk = $value;
-                    $o->no_pesanan = "INV-".Carbon::now()->format('Y-m-d');
-                    $o->nama_customer = $data['customer'];
-                    $o->jumlah_produk = $data['jumlah_produk'];
-                    $o->jumlah_bayar = $data['jumlah_bayar'];
-                    $o->total = $data['total'];
-                    $o->save();
+                $o = new order;
+                $o->nama_customer = $data['customer'];
+                $o->jumlah_bayar = $data['jumlah_bayar'];
+                $o->total = $data['total'];
+                $o->save();
+
+                $cart = cart::all();
+                foreach($cart as $value) {
+                    $m = new order_detail;
+                    $m->order_id = $o->id;
+                    $m->produk_id = $value->id_produk;
+                    $m->qty = $value->jumlah_produk;
+                    $m->save();
                 }
-                
                 $kembalian = $data['jumlah_bayar'] - $data['total'];
             }
             
@@ -189,7 +228,9 @@ class HomeController extends Controller
     public function hapus_cart($id=null)
     {
         $d=DB::delete("DELETE from cart where id_produk=?",[$id]);
-        $o=DB::delete("DELETE from pos_percent.order where id_produk=?",[$id]);
+        $o = order::where('id_produk', '=', $id)->delete();
+
+
         return redirect('/cart')->with('messagehapus','data berhasil di hapus!!!');
     }
 
@@ -248,6 +289,29 @@ class HomeController extends Controller
         return view('transaksi',compact('keranjang','transaksi'));
     }
 
+    public function master_meja(request $request)
+    {
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+        $meja = meja::all();
+        if ($request->isMethod('POST')) {
+            $n = new meja;
+            $n->nama = $request->nama;
+            $n->save();
+
+            return redirect()->back();
+        }
+
+        return view('master_meja', compact('keranjang', 'meja'));
+    }
+
+    public function hapus_meja($id)
+    {
+        $m = meja::find($id);
+        $m->delete();
+
+        return redirect()->back();
+    }
+
     public function laporan_new(request $request)
     {
         if(request()->ajax())
@@ -272,23 +336,58 @@ class HomeController extends Controller
         $nama = DB::select("SELECT 
             nama
         FROM
-            pos_percent.order a
+            pos.order_detail a
                 LEFT JOIN
-            produk b ON a.id_produk = b.id
+            produk b ON a.produk_id = b.id
         GROUP BY nama");
 
         // total jual produk
         $tjp = DB::select("SELECT 
-            b.nama, count(b.nama) as total_produk
+            b.nama, count(b.nama)*qty as total_produk
         FROM
-            pos_percent.order a
+            pos.order_detail a
                 LEFT JOIN
-            produk b ON a.id_produk = b.id
+            produk b ON a.produk_id = b.id
             GROUP BY b.nama");
+        
 
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
         return view('laporan_new', compact('keranjang', 'nama', 'tjp'));
+    }
+
+    public function pesanan()
+    {
+        $pesanan = order::get();
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+
+        return view('pesanan', compact('pesanan','keranjang'));
+    }
+
+    public function pesanan_selesai($id)
+    {
+        $pesanan = order::find($id);
+        $pesanan->update([
+            'stts' => 1,
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function pesanan_detail($id)
+    {
+        $pesanan = order::where('id', '=' ,$id)->with(['getDetail','getDetail.getProduk'])->get();
+        // return $pesanan[0]->getDetail[0]->getProduk->nama;
+
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+
+        return view('detail_pesanan', compact('pesanan', 'keranjang'));
+    }
+
+    public function print_pesanan_detail($id)
+    {
+        $pesanan = order::where('id', '=' ,$id)->with(['getDetail','getDetail.getProduk'])->get();
+        return view('print', compact('pesanan'));
     }
 
     public function destroy($id=null){

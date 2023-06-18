@@ -31,8 +31,8 @@
                                         <thead class="text-muted">
                                             <tr class="small text-uppercase">
                                                 <th scope="col">Produk</th>
-                                                <th scope="col" width="120">Qty</th>
-                                                <th scope="col" width="150">Harga</th>
+                                                <th class="text-center">Qty</th>
+                                                <th class="text-center">Harga</th>
                                                 <th scope="col" class="text-right d-none d-md-block" width="100"></th>
                                             </tr>
                                         </thead>
@@ -58,9 +58,9 @@
                                                                         class="fa fa-minus text-danger"></i></a>
                                                             @endif
                                                             <div class="col-sm-8">
-                                                                <input type="number" name="jumlah_produk[]"
-                                                                    class="form-control" value="{{ $cart->jumlah_produk }}"
-                                                                    min="1">
+                                                                <input type="number" name="qty[]"
+                                                                    class="form-control" style="text-align:center;" value="{{ $cart->jumlah_produk }}"
+                                                                    min="1" disabled>
                                                             </div>
                                                             <a class="col-sm-2 col-form-label"
                                                                 href="{{ url('/cart-quantity/' . $cart->id_produk . '/1') }}"><i
@@ -73,9 +73,9 @@
                                                         </div>
                                                     </td>
                                                     <td class="text-right d-none d-md-block">
-                                                        <a href="{{ url('hapus-cart/' . $cart->id) }}" class="btn btn-light"
+                                                        <a href="{{ url('hapus-cart/' . $cart->id) }}" class="btn btn-danger"
                                                             data-abc="true">
-                                                            <i class="fa fa-trash"></i> Hapus
+                                                            <i class="fa fa-trash"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -124,7 +124,7 @@
                                                 value="{{ $item->id_produk }}" hidden>
                                             <input type="text" class="form-control" name="total"
                                                 value="{{ $total }}" hidden>
-                                            <input type="number" name="jumlah_produk" class="form-control"
+                                            <input type="number" name="jumlah_produk[]" class="form-control"
                                                 value="{{ $cart->jumlah_produk }}" hidden>
                                         @endforeach
                                         <div class="row">

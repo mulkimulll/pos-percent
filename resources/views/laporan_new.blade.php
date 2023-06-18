@@ -29,7 +29,7 @@
             <div class="col-md-12">
                 <div class="card card-danger card-outline">
                     <div class="card-header">
-                        <h4>Produk Terjual</h4>
+                        <h4>Produk Terlaris</h4>
                     </div>
                     <div class="card-body">
                         <canvas id="donutChart"

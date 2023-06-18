@@ -10,7 +10,7 @@
         <div class="container">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0"> Daftar produk</h1>
+                    <h1 class="m-0"> Pesanan</h1>
                 </div>
             </div>
         </div>
@@ -22,30 +22,39 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Table menu percent coffee</h3>
+                            <h3 class="card-title">Table Pesanan</h3>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Produk</th>
-                                        <th>Harga</th>
+                                        <th>no</th>
+                                        <th>Customer</th>
+                                        <th>Status</th>
                                         <th class="text-right">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($produk as $item)
+                                    @foreach ($pesanan as $item)
                                         <tr>
-                                            <td>{{ $item->nama }}</td>
-                                            <td>@currency($item->harga)</td>
-                                            <td class="text-right">
-                                                <a href="{{ route('ubah.produk', $item->id) }}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
-                                                <a href="{{ route('hapus.produk', $item->id) }}" class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('apakah anda yakin?')">
-                                                    <i class="fa fa-trash"></i>
-                                                </a>
-                                            </td>
+                                          <td>{{ $loop->iteration }}</td>
+                                          <td>
+                                            {{ $item->nama_customer }}
+                                          </td>
+                                          <td>
+                                            @if ($item->stts == 0)
+                                            <span class="badge bg-warning text-dark">Sedang Di proses</span>
+                                            @else
+                                            <span class="badge bg-success text-white">Selesai</span>
+                                            
+                                            @endif
+                                          <td>
+                                            @if ($item->stts == 0)
+                                            <a href="{{ route('selesai.order', $item->id) }}" class="btn btn-sm btn-success"><i class="fa fa-check"></i></a>
+                                            @endif
+                                            <a href="{{ route('detail.order', $item->id) }}" class="btn btn-sm btn-info"><i class="fa fa-eye"></i></a>
+                                          </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -78,8 +87,7 @@
             $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": false,
-                "autoWidth": true,
-                "buttons": ["csv", "print"]
+                "autoWidth": true
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>
