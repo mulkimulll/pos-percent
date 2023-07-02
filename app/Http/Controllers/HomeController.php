@@ -31,7 +31,7 @@ class HomeController extends Controller
             $carts=$carts[0];
         }
 
-        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0 and no_meja is null")[0];
         // Dapatkan nilai pencarian dari permintaan
         $cari = $request->input('cari');
 
@@ -40,8 +40,6 @@ class HomeController extends Controller
             ->where('nama', 'LIKE', "%{$cari}%")
             ->get();
 
-        // Kembalikan tampilan pencarian dengan hasil yang dipadatkan
-        // dd($produk);
         return view('home',compact('produk','keranjang','carts'));
     }
 
@@ -110,108 +108,197 @@ class HomeController extends Controller
         return redirect()->back();
     }
 
-    public function cart(Request $request, $id=null)
+    public function cart(Request $request, $id_meja)
     {
-        $nilai_diskon = 0;
-        if ($nilai_diskon=0) {
-            return redirect('/')->with('kosong','Keranjang kosong, silahkan pilih menu di bawah');
+        if ($id_meja != 'NULL') {
+             // untuk di navbar keranjang
+             $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0 and no_meja = $id_meja")[0];
+
+             $carts = DB::select("
+                     SELECT 
+                         a.*,
+                         jumlah_produk,
+                         jumlah_produk * a.harga AS total,
+                         id_produk,
+                         stts
+                     FROM
+                         produk a
+                             RIGHT JOIN
+                         cart b ON a.id = b.id_produk
+                     WHERE
+                         stts = 0 and no_meja is not null
+             ");
+ 
+             // hitung keranjang
+             $total_amount = 0;
+             foreach($carts as $item){
+             $total_amount = $total_amount + ($item->harga * $item->jumlah_produk);
+             }
+ 
+             // hitung keseluruhan
+             $total = 0;
+             foreach($carts as $item1){
+                 $total = $total + ($item1->harga * $item1->jumlah_produk);
+             }
+             $id_meja = $id_meja;
+             
+             return view('cart',compact('carts','keranjang','total_amount','total','id_meja'));
         } else {
-        // recomendasi produk
-        $produk = DB::select('SELECT * FROM produk ORDER BY created_at');
+            $nilai_diskon = 0;
+            if ($nilai_diskon=0) {
+                return redirect('/')->with('kosong','Keranjang kosong, silahkan pilih menu di bawah');
+            } else {
+            $produk = DB::select('SELECT * FROM produk ORDER BY created_at');
+            // untuk di navbar keranjang
+            $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0 and no_meja is null")[0];
 
-        // untuk di navbar keranjang
-        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+            $carts = DB::select("
+                    SELECT 
+                        a.*,
+                        jumlah_produk,
+                        jumlah_produk * a.harga AS total,
+                        id_produk,
+                        stts
+                    FROM
+                        produk a
+                            RIGHT JOIN
+                        cart b ON a.id = b.id_produk
+                    WHERE
+                        stts = 0 and no_meja is null
+            ");
 
-        $carts = DB::select("
-                SELECT 
-                    a.*,
-                    jumlah_produk,
-                    jumlah_produk * a.harga AS total,
-                    id_produk,
-                    stts
-                FROM
-                    produk a
-                        RIGHT JOIN
-                    cart b ON a.id = b.id_produk
-                WHERE
-                    stts = 0
-        ");
+            // hitung keranjang
+            $total_amount = 0;
+            foreach($carts as $item){
+            $total_amount = $total_amount + ($item->harga * $item->jumlah_produk);
+            }
+            
+            // hitung diskon
+            $i = $request->diskon;
+            foreach ($carts as $key) {
+                $nilai_diskon = ($i/100)*$total_amount;
+            }
 
-        $s = DB::select("SELECT id from cart where id=?",[$id]);
-
-        // hitung keranjang
-        $total_amount = 0;
-        foreach($carts as $item){
-        $total_amount = $total_amount + ($item->harga * $item->jumlah_produk);
+            // hitung keseluruhan
+            $total = 0;
+            foreach($carts as $item1){
+                $total = $total + ($item1->harga * $item1->jumlah_produk) - $nilai_diskon;
+            }
+            
+            return view('cart',compact('carts','keranjang','total_amount','nilai_diskon','total','produk'));
+            }
         }
-        
-        // hitung diskon
-        $i = $request->diskon;
-        foreach ($carts as $key) {
-            $nilai_diskon = ($i/100)*$total_amount;
-        }
-
-        // hitung keseluruhan
-        $total = 0;
-        foreach($carts as $item1){
-            $total = $total + ($item1->harga * $item1->jumlah_produk) - $nilai_diskon;
-        }
-        
-        return view('cart',compact('carts','keranjang','total_amount','nilai_diskon','total','produk','s'));
-        }
-       
     }
 
     public function addToCart(Request $request)
     {
 
-        if($request->isMethod('post')){
-            // return $request;
-            $r = DB::select("SELECT count(id_produk) as id_produk FROM cart where id_produk=? and stts=0",[$request->id_produk])[0];
-            $produk = Produk::find($request->id_produk);
-            $produk = $produk->nama;
+        $r = DB::select("SELECT count(id_produk) as id_produk FROM cart where id_produk=? and stts=0",[$request->id_produk])[0];
+                $produk = Produk::find($request->id_produk);
+                $produk = $produk->nama;
 
-            if ($r->id_produk == 0) {
-                $data = $request->all();
-                $cart = new cart;
-                $cart->id_produk = $data['id_produk'];
-                $cart->stts = '0';
-                $cart->save();
-    
-                return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
-            }else {
-                return redirect()->back();
-            }  
+                if ($r->id_produk == 0) {
+                    $data = $request->all();
+                    $cart = new cart;
+                    $cart->id_produk = $data['id_produk'];
+                    $cart->stts = '0';
+                    $cart->save();
+        
+                    return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
+        }
+    }
+    public function addToCartCust(Request $request, $id_meja)
+    {
+
+        if($request->isMethod('post')){
+            if ($id_meja) {
+                $r = DB::select("SELECT count(id_produk) as id_produk FROM cart where id_produk=? and no_meja is not null",[$request->id_produk])[0];
+                $produk = Produk::find($request->id_produk);
+                $produk = $produk->nama;
+
+                if ($r->id_produk == 0) {
+                    $data = $request->all();
+                    $cart = new cart;
+                    $cart->id_produk = $data['id_produk'];
+                    $cart->stts = '0';
+                    $cart->no_meja = $id_meja;
+                    $cart->save();
+        
+                    return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
+                }else {
+                    // return 'gagal';
+                    return redirect()->back();
+                }  
+            } else {
+                $r = DB::select("SELECT count(id_produk) as id_produk FROM cart where id_produk=? and stts=0",[$request->id_produk])[0];
+                $produk = Produk::find($request->id_produk);
+                $produk = $produk->nama;
+
+                if ($r->id_produk == 0) {
+                    $data = $request->all();
+                    $cart = new cart;
+                    $cart->id_produk = $data['id_produk'];
+                    $cart->stts = '0';
+                    $cart->save();
+        
+                    return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
+                }else {
+                    return redirect()->back();
+                }  
+            }
         }
     }
 
-    public function order(Request $request, $id=null)
+    public function order(Request $request, $id_meja)
     {
         if ($request->isMethod('post')) {
-            // return $request;
-            $data = $request->all();
-            if ($request->jumlah_bayar < $request->total) {
-                return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
-            } else {
-                $o = new order;
-                $o->nama_customer = $data['customer'];
-                $o->jumlah_bayar = $data['jumlah_bayar'];
-                $o->total = $data['total'];
-                $o->save();
-
-                $cart = cart::all();
-                foreach($cart as $value) {
-                    $m = new order_detail;
-                    $m->order_id = $o->id;
-                    $m->produk_id = $value->id_produk;
-                    $m->qty = $value->jumlah_produk;
-                    $m->save();
+            if ($id_meja) {
+                $data = $request->all();
+                if ($request->jumlah_bayar < $request->total) {
+                    return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
+                } else {
+                    $o = new order;
+                    $o->nama_customer = $data['customer'];
+                    $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->no_meja = $id_meja;
+                    $o->total = $data['total'];
+                    $o->save();
+    
+                    $cart = cart::where('no_meja', $id_meja)->get();
+                    foreach($cart as $value) {
+                        $m = new order_detail;
+                        $m->order_id = $o->id;
+                        $m->produk_id = $value->id_produk;
+                        $m->qty = $value->jumlah_produk;
+                        $m->save();
+                        $value->delete();
+                    }
+                    $kembalian = $data['jumlah_bayar'] - $data['total'];
                 }
-                $kembalian = $data['jumlah_bayar'] - $data['total'];
+            } else {
+                $data = $request->all();
+                if ($request->jumlah_bayar < $request->total) {
+                    return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
+                } else {
+                    $o = new order;
+                    $o->nama_customer = $data['customer'];
+                    $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->total = $data['total'];
+                    $o->save();
+    
+                    $cart = cart::all();
+                    foreach($cart as $value) {
+                        $m = new order_detail;
+                        $m->order_id = $o->id;
+                        $m->produk_id = $value->id_produk;
+                        $m->qty = $value->jumlah_produk;
+                        $m->save();
+                    }
+                    $kembalian = $data['jumlah_bayar'] - $data['total'];
+                    $d=DB::delete("DELETE from cart where no_meja is null");
+                }
             }
-            
         }
-        $d=DB::delete("DELETE from cart");
         
         return redirect()->back()->with('bayar','Kembalian: Rp. '.number_format($kembalian,0));
     }
@@ -390,8 +477,41 @@ class HomeController extends Controller
         return view('print', compact('pesanan'));
     }
 
+    public function pesan_by_meja($id)
+    {
+        return 'customer';
+    }
+
     public function destroy($id=null){
         $d=DB::delete("DELETE from produk where id=?",[$id]);
         return redirect('/tambah-produk')->with('messagehapus','data berhasil di hapus!!!');
+    }
+
+    // customer
+    public function index_customer(request $request, $id_meja)
+    {
+        $carts = DB::select("
+                SELECT 
+                    a.*, jumlah_produk, jumlah_produk*a.harga as total, id_produk
+                FROM
+                produk a
+                    RIGHT JOIN
+                cart b ON a.id = b.id_produk"
+        );
+        if ($carts) {
+            $carts=$carts[0];
+        }
+
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0 and no_meja is not null")[0];
+        // Dapatkan nilai pencarian dari permintaan
+        $cari = $request->input('cari');
+
+        // Cari di kolom judul dan isi dari tabel posting
+        $produk = produk::query()
+            ->where('nama', 'LIKE', "%{$cari}%")
+            ->get();
+        $id_meja = $id_meja;
+
+        return view('home_customer',compact('produk','keranjang','carts','id_meja'));
     }
 }

@@ -42,7 +42,7 @@
                                                     <td>
                                                         <figure class="itemside align-items-center">
                                                             <div class="aside">
-                                                                <img src="{{ $cart->gambar }}" class="img-sm">
+                                                                <img src="{{ asset($cart->gambar) }}" class="img-sm">
                                                             </div>
                                                             <figcaption class="info"> <a href="#"
                                                                     class="title text-dark"
@@ -98,6 +98,7 @@
                         <aside class="col-lg-3">
                             <div class="card">
                                 <div class="card-body">
+                                    @if (Auth::user())
                                     <form action="{{ url('order') }}" method="post">
                                         @csrf
                                         <div class="form-group"> <label>Nama customer</label>
@@ -110,14 +111,12 @@
                                             <dt>Total:</dt>
                                             <dd class="text-right ml-3">@currency($total_amount)</dd>
                                         </dl>
-                                        @if (Auth::user())
                                             <div class="form-group"> <label>Jumlah bayar</label>
                                                 <div class="input-group">
                                                     <input type="text" class="form-control coupon" name="jumlah_bayar"
                                                         placeholder="Rp.">
                                                 </div>
                                             </div>
-                                        @endif
                                         <hr>
                                         @foreach ($carts as $item)
                                             <input type="text" class="form-control coupon" name="id_produk[]"
@@ -132,10 +131,48 @@
                                                 {{-- <button type="submit" class="btn btn-primary btn-block btn-bayar"><i class="fa fa-money-bill"></i> Bayar Sekarang
                                               </button> --}}
                                                 <button class="btn btn-out btn-success btn-square btn-main mb-2">
-                                                    <i class="fa fa-money-bill"></i> Bayar Sekarang
+                                                    <i class="fa fa-money-bill"></i> Bayar Ke kasir
                                                 </button>
                                             </div>
                                     </form>
+                                    @else
+                                    <form action="{{ url('order-cust/'.$id_meja) }}" method="post">
+                                        @csrf
+                                        <div class="form-group"> <label>Nama customer</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="customer"
+                                                    placeholder="junaidi" required>
+                                            </div>
+                                        </div>
+                                        <dl class="dlist-align">
+                                            <dt>Total:</dt>
+                                            <dd class="text-right ml-3">@currency($total_amount)</dd>
+                                        </dl>
+                                            <div class="form-group"> <label>Jumlah bayar</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control coupon" name="jumlah_bayar"
+                                                        placeholder="Rp.">
+                                                </div>
+                                            </div>
+                                        <hr>
+                                        @foreach ($carts as $item)
+                                            <input type="text" class="form-control coupon" name="id_produk[]"
+                                                value="{{ $item->id_produk }}" hidden>
+                                            <input type="text" class="form-control" name="total"
+                                                value="{{ $total }}" hidden>
+                                            <input type="number" name="jumlah_produk[]" class="form-control"
+                                                value="{{ $cart->jumlah_produk }}" hidden>
+                                        @endforeach
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                {{-- <button type="submit" class="btn btn-primary btn-block btn-bayar"><i class="fa fa-money-bill"></i> Bayar Sekarang
+                                              </button> --}}
+                                                <button class="btn btn-out btn-success btn-square btn-main mb-2">
+                                                    <i class="fa fa-money-bill"></i> Bayar Ke kasir
+                                                </button>
+                                            </div>
+                                    </form>
+                                    @endif
                                     {{-- <button class="btn btn-out btn-warning btn-square btn-main">
                                         Bayar nanti
                                     </button> --}}

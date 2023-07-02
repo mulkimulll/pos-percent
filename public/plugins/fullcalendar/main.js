@@ -566,7 +566,7 @@ var FullCalendar = (function (exports) {
         ];
     }
     function arrayToLocalDate(a) {
-        return new Date(a[0], a[1] || 0, a[2] == null ? 1 : a[2], // day of month
+        return new Date(a[0], a[1] || 0, a[2] == null ? 1 : a[2], / of month
         a[3] || 0, a[4] || 0, a[5] || 0);
     }
     function dateToUtcArray(date) {
@@ -2937,7 +2937,7 @@ var FullCalendar = (function (exports) {
         CalendarApi.prototype.zoomTo = function (dateMarker, viewType) {
             var state = this.getCurrentData();
             var spec;
-            viewType = viewType || 'day'; // day is default zoom
+            viewType = viewType || 'day'; / is default zoom
             spec = state.viewSpecs[viewType] || this.getUnitViewSpec(viewType);
             this.unselect();
             if (spec) {

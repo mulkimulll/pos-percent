@@ -739,7 +739,7 @@ function genTimeStuffs(ms) {
 		m * 10,
 		m * 15,
 		m * 30,
-		// day divisors (# of hrs)
+		/ divisors (# of hrs)
 		h,
 		h * 2,
 		h * 3,

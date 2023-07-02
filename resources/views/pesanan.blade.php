@@ -40,7 +40,7 @@
                                         <tr>
                                           <td>{{ $loop->iteration }}</td>
                                           <td>
-                                            {{ $item->nama_customer }}
+                                            {{ $item->nama_customer }} (no meja: {{ $item->no_meja?$item->no_meja:'Pesan dari kasir' }})
                                           </td>
                                           <td>
                                             @if ($item->stts == 0)

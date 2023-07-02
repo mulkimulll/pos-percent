@@ -83,7 +83,7 @@
                 <tr>
                   <td>{{ $loop->iteration }}</td>
                   <td>{{ $item->nama }}</td>
-                  <td>{!! QrCode::size(100)->generate(env('APP_URL').'/pesan/no_meja='.$item->id); !!}</td>
+                  <td>{!! QrCode::size(100)->generate(env('APP_URL').'/pesan/no_meja/'.$item->id); !!}</td>
                   <td>
                     <a href="{{ route('hapus.meja', $item->id) }}" class="btn btn-danger"><i
                         class="fa fa-trash"></i></a>

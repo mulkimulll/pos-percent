@@ -4,14 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 
+
 Route::get('/', [AuthController::class, 'showFormLogin'])->name('login');
 Route::get('login', [AuthController::class, 'showFormLogin'])->name('login');
 Route::post('login', [AuthController::class, 'login']);
 Route::get('register', [AuthController::class, 'showFormRegister'])->name('register');
 Route::post('register', [AuthController::class, 'register']);
- 
+
 Route::group(['middleware' => 'auth'], function () {
- 
     Route::get('home', [HomeController::class, 'index'])->name('home');
     // produk
     Route::get('daftar-produk', [HomeController::class, 'produk'])->name('daftar.produk');
@@ -20,7 +20,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::match(['get','post'],'ubah-produk/{id}', [HomeController::class, 'ubah_produk'])->name('ubah.produk');
 
     // cart
-    Route::match(['get', 'post'], 'cart', [HomeController::class, 'cart'])->name('cart');
+    Route::match(['get', 'post'], 'cart/meja/{id_meja}', [HomeController::class, 'cart'])->name('cart');
     Route::get('/cart-quantity/{id}/{quantity}', [HomeController::class, 'cart_quantity'])->name('cart.quantity');
     Route::get('hapus-cart/{id}', [HomeController::class, 'hapus_cart']);
     Route::post('/add-to-cart', [HomeController::class, 'addToCart'])->name('cart.store');
@@ -50,8 +50,11 @@ Route::group(['middleware' => 'auth'], function () {
  
 });
 
-Route::get('menu', [HomeController::class, 'index'])->name('home');
-Route::match(['get', 'post'], 'cart', [HomeController::class, 'cart'])->name('cart');
+Route::get('/pesan/no_meja/{id_meja}', [HomeController::class, 'index_customer'])->name('pesan.meja');
+Route::match(['get', 'post'], 'cart/meja/{id_meja}', [HomeController::class, 'cart'])->name('cart');
 Route::get('/cart-quantity/{id}/{quantity}', [HomeController::class, 'cart_quantity'])->name('cart.quantity');
 Route::get('hapus-cart/{id}', [HomeController::class, 'hapus_cart']);
-Route::post('/add-to-cart-cust', [HomeController::class, 'addToCart'])->name('cart.store');
+Route::post('/add-to-cart-cust/{id_meja}', [HomeController::class, 'addToCartCust'])->name('cart.store');
+Route::match(['get', 'post'], 'order-cust/{id_meja}', [HomeController::class, 'order']);
+
+
