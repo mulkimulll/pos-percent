@@ -2,15 +2,15 @@
     <div class="container">
         @if (Auth::user())
         <a href="{{ url('/') }}" class="navbar-brand">
-            <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo" class="brand-image img-circle elevation-3"
-                style="opacity: .8">
-            <span class="brand-text font-weight-light">PakKasir</span>
+            {{-- <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo" class="brand-image img-circle elevation-3"
+                style="opacity: .8"> --}}
+            <span class="brand-text font-weight-light">TERUM</span>
         </a>
         @else
         <a href="{{ url('/pesan/meja/'.$id_meja) }}" class="navbar-brand">
-            <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo" class="brand-image img-circle elevation-3"
-                style="opacity: .8">
-            <span class="brand-text font-weight-light">PakKasir</span>
+            {{-- <img src="{{ asset('images/pakkasir-logo.png') }}" alt="logo" class="brand-image img-circle elevation-3"
+                style="opacity: .8"> --}}
+            <span class="brand-text font-weight-light">TERUM</span>
         </a>
         @endif
 
