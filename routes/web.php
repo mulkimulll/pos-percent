@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     // meja
     Route::match(['get', 'post'], 'master-meja', [HomeController::class, 'master_meja'])->name('master.meja');
     Route::get('hapus-meja/{id}', [HomeController::class, 'hapus_meja'])->name('hapus.meja');
+    Route::match(['get', 'post'],'edit-meja/{id}', [HomeController::class, 'edit_meja'])->name('edit.meja');
 
     // pesanan
     Route::get('pesanan', [HomeController::class, 'pesanan'])->name('pesanan');

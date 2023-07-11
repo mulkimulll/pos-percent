@@ -37,11 +37,12 @@
   .close:hover {
     color: #000;
   }
+
   @media print {
-  .noPrint{
-    display:none;
+    .noPrint {
+      display: none;
+    }
   }
-}
 </style>
 @endsection
 @section('content')
@@ -85,6 +86,7 @@
                   <td>{{ $item->nama }}</td>
                   <td>{!! QrCode::size(100)->generate(env('APP_URL').'/pesan/no_meja/'.$item->id); !!}</td>
                   <td>
+                    <a href="{{ route('edit.meja', $item->id) }}" class="btn btn-info"><i class="fa fa-edit"></i></a>
                     <a href="{{ route('hapus.meja', $item->id) }}" class="btn btn-danger"><i
                         class="fa fa-trash"></i></a>
                   </td>

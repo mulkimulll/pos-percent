@@ -391,6 +391,20 @@ class HomeController extends Controller
         return view('master_meja', compact('keranjang', 'meja'));
     }
 
+    public function edit_meja(request $request, $id){
+        $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
+        $meja = meja::find($id);
+        if ($request->isMethod('post')) {
+            $meja->update([
+                'nama' => $request->nama
+            ]);
+
+            return redirect('/master-meja');
+        }
+
+        return view('master_meja_edit', compact('meja','keranjang'));
+    }
+
     public function hapus_meja($id)
     {
         $m = meja::find($id);
