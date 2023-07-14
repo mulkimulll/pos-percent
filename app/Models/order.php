@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\produk;
 use App\Models\order_detail;
+use App\Models\meja;
 
 class order extends Model
 {
@@ -17,5 +18,10 @@ class order extends Model
     public function getDetail()
     {
         return $this->hasMany(order_detail::class, 'order_id', 'id');
+    }
+
+    public function getMeja()
+    {
+        return $this->hasOne(meja::class, 'id', 'no_meja');
     }
 }

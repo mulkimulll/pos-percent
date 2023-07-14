@@ -29,6 +29,11 @@
       font-weight: bold;
     }
   </style>
+  <style type="text/css" media="print">
+    .no-print {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -59,6 +64,7 @@
       <span>Waktu Pembayaran:</span>
       <span>{{ $pesanan[0]->created_at }}</span>
     </div>
+    <button class="no-print" onclick="window.print()">Cetak</button>
   </div>
 </body>
 

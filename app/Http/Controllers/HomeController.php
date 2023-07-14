@@ -436,7 +436,7 @@ class HomeController extends Controller
 
     public function pesanan()
     {
-        $pesanan = order::get();
+        $pesanan = order::with('getMeja')->get();
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
         return view('pesanan', compact('pesanan','keranjang'));
