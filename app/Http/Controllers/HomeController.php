@@ -197,14 +197,16 @@ class HomeController extends Controller
                 $produk = Produk::find($request->id_produk);
                 $produk = $produk->nama;
 
-                if ($r->id_produk == 0) {
-                    $data = $request->all();
-                    $cart = new cart;
-                    $cart->id_produk = $data['id_produk'];
-                    $cart->stts = '0';
-                    $cart->save();
+        if ($r->id_produk == 0) {
+            $data = $request->all();
+            $cart = new cart;
+            $cart->id_produk = $data['id_produk'];
+            $cart->stts = '0';
+            $cart->save();
         
-                    return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
+            return redirect()->back()->with(['message' => $produk.' berhasil dimasukkan ke keranjang']);
+        } else {
+            return redirect()->back()->with(['message' => $produk.' sudah ada di keranjang']);
         }
     }
     public function addToCartCust(Request $request, $id_meja)
