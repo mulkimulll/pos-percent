@@ -7,7 +7,7 @@
                 <h1 class="m-0"> MENU</h1>
             </div>
             <div class="col-sm-5">
-                <form action="{{ route('home') }}" method="GET" class="form-inline ml-0 ml-sm-3">
+                <form action="{{ Auth::user()?route('home'):route('pesan.meja',$id_meja) }}" method="GET" class="form-inline ml-0 ml-sm-3">
                     <div class="input-group input-group-sm">
                         <input class="form-control form-control-navbar" type="search" name="cari"
                             placeholder="cari menu" aria-label="Search">
@@ -17,9 +17,8 @@
                             </button>
 
                 </form>
-                <button class="btn btn-navbar btn-danger" type="button">
-                    <a href="{{ route('home') }}"><i class="fas fa-trash"></i></a>
-                </button>
+                <a href="{{ Auth::user()?route('home'):route('pesan.meja',$id_meja) }}" class="btn btn-navbar btn-danger"><i
+                        class="fas fa-trash"></i></a>
             </div>
         </div>
     </div>
