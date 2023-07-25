@@ -284,7 +284,12 @@ class HomeController extends Controller
     {
         if ($request->isMethod('post')) {
             if ($id_meja) {
-                $data = $request->all();
+                // jika pesanan masih di proses validasi tidak bisa pesan sampai selesai pesanan
+                $cek_pesanan = order::where('no_meja', $id_meja)->where('stts', 0)->first();
+                if ($cek_pesanan) {
+                    return redirect()->back()->with(['error' => 'Pesanan Masih di proses']);
+                } else {
+                    $data = $request->all();
                 if ($request->jumlah_bayar < $request->total) {
                     return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
                 } else {
@@ -311,31 +316,9 @@ class HomeController extends Controller
                     }
                     $kembalian = $data['jumlah_bayar'] - $data['total'];
                 }
-            } else {
-                $data = $request->all();
-                if ($request->jumlah_bayar < $request->total) {
-                    return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
-                } else {
-                    $o = new order;
-                    $o->nama_customer = $data['customer'];
-                    $o->jumlah_bayar = $data['jumlah_bayar'];
-                    $o->total = $data['total'];
-                    $o->save();
-    
-                    $cart = cart::all();
-                    foreach($cart as $value) {
-                        $m = new order_detail;
-                        $m->order_id = $o->id;
-                        $m->produk_id = $value->id_produk;
-                        $m->qty = $value->jumlah_produk;
-                        $m->save();
-                    }
-                    $kembalian = $data['jumlah_bayar'] - $data['total'];
-                    $d=DB::delete("DELETE from cart where no_meja is null");
                 }
             }
         }
-        
         return redirect()->back()->with('bayar','Kembalian: Rp. '.number_format($kembalian,0));
     }
 
