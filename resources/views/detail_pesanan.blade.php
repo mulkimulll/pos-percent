@@ -38,9 +38,19 @@
                     </td>
                   </tr>
                   <tr>
+                    <td>JUMLAH BAYAR</td>
+                    <td>:</td>
+                    <td>@currency($pesanan?$pesanan[0]->jumlah_bayar:'-')</td>
+                  </tr>
+                  <tr>
                     <td>TOTAL</td>
                     <td>:</td>
                     <td>@currency($pesanan?$pesanan[0]->total:'-')</td>
+                  </tr>
+                  <tr>
+                    <td>KEMBALIAN</td>
+                    <td>:</td>
+                    <td>@currency($pesanan?$pesanan[0]->kembalian:'-')</td>
                   </tr>
                   <tr>
                     <td>PESANAN </td>

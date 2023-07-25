@@ -52,8 +52,16 @@
     </div>
     <br>
     <div class="item total">
+      <span>Jumlah Bayar:</span>
+      <span>@currency($pesanan?$pesanan[0]->jumlah_bayar:'-')</span>
+    </div>
+    <div class="item total">
       <span>Total:</span>
       <span>@currency($pesanan?$pesanan[0]->total:'-')</span>
+    </div>
+    <div class="item total">
+      <span>Kembalian:</span>
+      <span>@currency($pesanan?$pesanan[0]->kembalian:'-')</span>
     </div>
     <hr>
     <div class="item">

@@ -261,6 +261,7 @@ class HomeController extends Controller
                     $o = new order;
                     $o->nama_customer = $data['customer'];
                     $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->kembalian = $data['jumlah_bayar'] - $data['total'];
                     $o->total = $data['total'];
                     $o->save();
     
@@ -300,6 +301,7 @@ class HomeController extends Controller
                     $o = new order;
                     $o->nama_customer = $data['customer'];
                     $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->kembalian = $data['jumlah_bayar'] - $data['total'];
                     $o->no_meja = $id_meja;
                     $o->stts = 2;
                     $o->total = $data['total'];
