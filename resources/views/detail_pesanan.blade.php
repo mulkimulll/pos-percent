@@ -6,7 +6,10 @@
       <div class="container-fluid">
         <h3>Detail Pesanan</h3>
         <a href="{{ route('print.order',$pesanan[0]->id) }}" class="btn btn-sm btn-primary">Print</a>
-        
+        &nbsp;
+        @if ($pesanan[0]->stts == 2)
+        <a href="{{ route('proses.order',$pesanan[0]->id) }}" class="btn btn-sm btn-success">Proses Pesanan</a>
+        @endif
         <div class="row mt-3">
           <aside class="col-md-12">
             <div class="card">
@@ -27,8 +30,10 @@
                       {{-- {{ dd($pesanan?$pesanan[0]->stts:'-') }} --}}
                       @if ($pesanan[0]->stts == 0)
                       <span class="badge bg-warning text-dark">Sedang Di proses</span>
-                      @else
+                      @elseif ($pesanan[0]->stts == 1)
                       <span class="badge bg-success text-white">Selesai</span>
+                      @else
+                      <span class="badge bg-secondary text-white">Belum Bayar</span>
                       @endif
                     </td>
                   </tr>

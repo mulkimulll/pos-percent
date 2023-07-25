@@ -279,6 +279,65 @@ class HomeController extends Controller
         
         return redirect()->back()->with('bayar','Kembalian: Rp. '.number_format($kembalian,0));
     }
+    
+    public function order_cust(Request $request, $id_meja)
+    {
+        if ($request->isMethod('post')) {
+            if ($id_meja) {
+                $data = $request->all();
+                if ($request->jumlah_bayar < $request->total) {
+                    return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
+                } else {
+                    // status
+                    // 0 = proses
+                    // 1 = selesai
+                    // 2 = belum bayar
+                    $o = new order;
+                    $o->nama_customer = $data['customer'];
+                    $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->no_meja = $id_meja;
+                    $o->stts = 2;
+                    $o->total = $data['total'];
+                    $o->save();
+    
+                    $cart = cart::where('no_meja', $id_meja)->get();
+                    foreach($cart as $value) {
+                        $m = new order_detail;
+                        $m->order_id = $o->id;
+                        $m->produk_id = $value->id_produk;
+                        $m->qty = $value->jumlah_produk;
+                        $m->save();
+                        $value->delete();
+                    }
+                    $kembalian = $data['jumlah_bayar'] - $data['total'];
+                }
+            } else {
+                $data = $request->all();
+                if ($request->jumlah_bayar < $request->total) {
+                    return redirect()->back()->with(['error' => 'Pembayaran kurang dari total bayar']);
+                } else {
+                    $o = new order;
+                    $o->nama_customer = $data['customer'];
+                    $o->jumlah_bayar = $data['jumlah_bayar'];
+                    $o->total = $data['total'];
+                    $o->save();
+    
+                    $cart = cart::all();
+                    foreach($cart as $value) {
+                        $m = new order_detail;
+                        $m->order_id = $o->id;
+                        $m->produk_id = $value->id_produk;
+                        $m->qty = $value->jumlah_produk;
+                        $m->save();
+                    }
+                    $kembalian = $data['jumlah_bayar'] - $data['total'];
+                    $d=DB::delete("DELETE from cart where no_meja is null");
+                }
+            }
+        }
+        
+        return redirect()->back()->with('bayar','Kembalian: Rp. '.number_format($kembalian,0));
+    }
 
     public function cart_quantity(Request $request,$id=null,$quantity=null)
     {
@@ -292,17 +351,17 @@ class HomeController extends Controller
     public function hapus_cart($id=null)
     {
         $d=DB::delete("DELETE from cart where id_produk=?",[$id]);
-        $o = order::where('id_produk', '=', $id)->delete();
+        $o = order::where('id', '=', $id)->delete();
 
 
-        return redirect('/cart')->with('messagehapus','data berhasil di hapus!!!');
+        return redirect()->back()->with('messagehapus','data berhasil di hapus!!!');
     }
 
     public function invoice(Request $request)
     {
         $keranjang = DB::select("SELECT COUNT(*) as keranjang FROM cart WHERE stts=0")[0];
 
-        $inv = DB::select("SELECT * FROM pos_percent.order WHERE nama_customer=?",[$customer]);
+        $inv = DB::select("SELECT * FROM erth5646_pos.order WHERE nama_customer=?",[$customer]);
         if ($inv) {
             $inv=$inv[0];
         }
@@ -345,9 +404,9 @@ class HomeController extends Controller
                 total,
                 a.created_at
             FROM
-                pos_percent.order a
+                erth5646_pos.order a
                     LEFT JOIN
-                pos_percent.produk b ON a.id_produk = b.id
+                erth5646_pos.produk b ON a.id_produk = b.id
             ORDER BY created_at DESC");
 
         return view('transaksi',compact('keranjang','transaksi'));
@@ -414,7 +473,7 @@ class HomeController extends Controller
         $nama = DB::select("SELECT 
             nama
         FROM
-            pos.order_detail a
+            erth5646_pos.order_detail a
                 LEFT JOIN
             produk b ON a.produk_id = b.id
         GROUP BY nama");
@@ -423,7 +482,7 @@ class HomeController extends Controller
         $tjp = DB::select("SELECT 
             b.nama, count(b.nama)*qty as total_produk
         FROM
-            pos.order_detail a
+            erth5646_pos.order_detail a
                 LEFT JOIN
             produk b ON a.produk_id = b.id
             GROUP BY b.nama");
@@ -437,6 +496,7 @@ class HomeController extends Controller
     public function pesanan()
     {
         $pesanan = order::with('getMeja')->get();
+        // return $pesanan;
         $keranjang = DB::select("SELECT count(*) as keranjang FROM cart WHERE stts=0")[0];
 
         return view('pesanan', compact('pesanan','keranjang'));
@@ -447,6 +507,16 @@ class HomeController extends Controller
         $pesanan = order::find($id);
         $pesanan->update([
             'stts' => 1,
+        ]);
+
+        return redirect()->back();
+    }
+    
+    public function pesanan_proses($id)
+    {
+        $pesanan = order::find($id);
+        $pesanan->update([
+            'stts' => 0,
         ]);
 
         return redirect()->back();

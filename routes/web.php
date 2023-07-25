@@ -43,6 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
     // pesanan
     Route::get('pesanan', [HomeController::class, 'pesanan'])->name('pesanan');
     Route::get('pesanan-selesai/{id}', [HomeController::class, 'pesanan_selesai'])->name('selesai.order');
+    Route::get('pesanan-proses/{id}', [HomeController::class, 'pesanan_proses'])->name('proses.order');
     Route::get('pesanan-detail/{id}', [HomeController::class, 'pesanan_detail'])->name('detail.order');
     Route::get('print-detail/{id}', [HomeController::class, 'print_pesanan_detail'])->name('print.order');
     
@@ -56,6 +57,6 @@ Route::match(['get', 'post'], 'cart/meja/{id_meja}', [HomeController::class, 'ca
 Route::get('/cart-quantity/{id}/{quantity}', [HomeController::class, 'cart_quantity'])->name('cart.quantity');
 Route::get('hapus-cart/{id}', [HomeController::class, 'hapus_cart']);
 Route::post('/add-to-cart-cust/{id_meja}', [HomeController::class, 'addToCartCust'])->name('cart.store');
-Route::match(['get', 'post'], 'order-cust/{id_meja}', [HomeController::class, 'order']);
+Route::match(['get', 'post'], 'order-cust/{id_meja}', [HomeController::class, 'order_cust']);
 
 

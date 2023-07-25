@@ -52,7 +52,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="form-group row">
-                                                            @if ($cart->jumlah_produk >= 1)
+                                                            @if ($cart->jumlah_produk > 1)
                                                                 <a class="col-sm-2 col-form-label"
                                                                     href="{{ url('/cart-quantity/' . $cart->id_produk . '/-1') }}"><i
                                                                         class="fa fa-minus text-danger"></i></a>
@@ -104,7 +104,7 @@
                                         <div class="form-group"> <label>Nama customer</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" name="customer"
-                                                    placeholder="junaidi" required>
+                                                    placeholder="nama" required>
                                             </div>
                                         </div>
                                         <dl class="dlist-align">
@@ -130,9 +130,16 @@
                                             <div class="col-md-12">
                                                 {{-- <button type="submit" class="btn btn-primary btn-block btn-bayar"><i class="fa fa-money-bill"></i> Bayar Sekarang
                                               </button> --}}
-                                                <button class="btn btn-out btn-success btn-square btn-main mb-2">
+                                              
+                                              @if(empty($carts))
+                                              <button class="btn btn-out btn-success btn-square btn-main mb-2" disabled>
                                                     <i class="fa fa-money-bill"></i> Bayar Ke kasir
                                                 </button>
+                                               @else
+                                              <button class="btn btn-out btn-success btn-square btn-main mb-2">
+                                                    <i class="fa fa-money-bill"></i> Bayar Ke kasir
+                                                </button>
+                                              @endif
                                             </div>
                                     </form>
                                     @else
@@ -141,7 +148,7 @@
                                         <div class="form-group"> <label>Nama customer</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" name="customer"
-                                                    placeholder="junaidi" required>
+                                                    placeholder="nama" required>
                                             </div>
                                         </div>
                                         <dl class="dlist-align">
@@ -167,9 +174,17 @@
                                             <div class="col-md-12">
                                                 {{-- <button type="submit" class="btn btn-primary btn-block btn-bayar"><i class="fa fa-money-bill"></i> Bayar Sekarang
                                               </button> --}}
-                                                <button class="btn btn-out btn-success btn-square btn-main mb-2">
+                                              @if(empty($carts))
+                                              <button class="btn btn-out btn-success btn-square btn-main mb-2" disabled>
                                                     <i class="fa fa-money-bill"></i> Bayar Ke kasir
                                                 </button>
+                                              
+                                              @else
+                                              <button class="btn btn-out btn-success btn-square btn-main mb-2">
+                                                    <i class="fa fa-money-bill"></i> Bayar Ke kasir
+                                                </button>
+                                            @endif
+                                                
                                             </div>
                                     </form>
                                     @endif

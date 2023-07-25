@@ -121,20 +121,18 @@
                     }
                 },
 
-                buttons: [{
-                        extend: 'csv'
-                    },
+                buttons: [
                     {
                         extend: 'pdf',
-                        title: 'Laporan Penjualan Percent Coffee'
+                        title: 'Laporan Penjualan Teras Rumah'
                     },
                     {
                         extend: 'excel',
-                        title: 'Laporan Penjualan Percent Coffee'
+                        title: 'Laporan Penjualan Teras Rumah'
                     },
                     {
                         extend: 'print',
-                        title: 'Laporan Penjualan Percent Coffee'
+                        title: 'Laporan Penjualan Teras Rumah'
                     },
                 ],
                 ajax: {
